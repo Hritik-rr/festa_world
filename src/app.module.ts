@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { TweetModule } from './tweet/tweet.module';
+import { Tweet } from './tweet/entities/tweet.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,11 +17,13 @@ import { User } from './user/entities/user.entity';
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASS || 'admin',
       database: process.env.DB_NAME || 'postgres',
-      entities: [User], // Register the User entity
+      entities: [User, Tweet], // Register the User entity
       synchronize: true, // Automatically updates DB schema (disable in production)
       logging: false,
     }),
+    ConfigModule.forRoot({ cache: true }),
     UserModule,
+    TweetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

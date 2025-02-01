@@ -12,9 +12,20 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const existingUser = await this.userRepo.findOneBy({
+      email: createUserDto.email,
+    });
+    if (existingUser) {
+      throw new Error('User already exists');
+    }
+
     const newUser = this.userRepo.create(createUserDto);
-    return await this.userRepo.save(newUser);
+    const newUserCheck = await this.userRepo.save(newUser);
+    return newUserCheck;
   }
+
+  // if (error instanceof QueryFailedError && error.message.includes('duplicate key value violates unique constraint')) {
+  //   throw new HttpException('User with this email already exists', HttpStatus.CONFLICT);
 
   async findAll(): Promise<User[]> {
     return await this.userRepo.find();
