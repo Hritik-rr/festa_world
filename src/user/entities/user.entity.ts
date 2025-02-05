@@ -18,6 +18,6 @@ export class User {
   @Column({ length: 16, unique: true })
   email: string;
 
-  @OneToMany(() => Tweet, (tweet) => tweet.user)
+  @OneToMany(() => Tweet, (tweet) => tweet.userId)
   tweets: Tweet[];
 }

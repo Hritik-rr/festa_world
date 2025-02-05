@@ -18,14 +18,11 @@ export class Tweet {
   @Column({ length: 280 })
   content: string; // Text content of the tweet
 
-  @ManyToOne(() => User, (user) => user.tweets, { eager: true })
-  user: User; // Reference to the user who posted the tweet
+  @ManyToOne(() => User, (User) => User.id)
+  userId: string; // Reference to the user who posted the tweet
 
-  //   @OneToMany(() => Like, (like) => like.tweet)
-  //   likes: Like[]; // Likes on the tweet
-
-  @ManyToOne(() => Tweet, { nullable: true, eager: true })
-  originalTweetId: string; // Reference to the original tweet id for retweets
+  @ManyToOne(() => Tweet, { nullable: true })
+  originalTweetId?: string; // Reference to the original tweet id for retweets
 
   @CreateDateColumn()
   createdAt: Date; // Date and time the tweet was created
@@ -33,3 +30,6 @@ export class Tweet {
   @UpdateDateColumn()
   updatedAt: Date; // Date and time the tweet was last updated
 }
+
+//   @OneToMany(() => Like, (like) => like.tweet)
+//   likes: Like[]; // Likes on the tweet

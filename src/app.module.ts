@@ -7,6 +7,7 @@ import { User } from './user/entities/user.entity';
 import { TweetModule } from './tweet/tweet.module';
 import { Tweet } from './tweet/entities/tweet.entity';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({ cache: true }),
     UserModule,
     TweetModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

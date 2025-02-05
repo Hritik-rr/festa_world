@@ -12,29 +12,68 @@ export class TweetService {
     @InjectRepository(Tweet) private readonly tweetRepo: Repository<Tweet>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
+  // async create(createTweetDto: CreateTweetDto): Promise<Tweet> {
+  //   const user = await this.userRepo.findOne({
+  //     where: { id: createTweetDto.userId },
+  //   });
+  //   if (!user) throw new Error('User not found');
+
+  //   let originalTweet: Tweet | null;
+  //   if (
+  //     createTweetDto.originalTweetId !== '' ||
+  //     createTweetDto.originalTweetId !== null
+  //   ) {
+  //     originalTweet = await this.tweetRepo.findOne({
+  //       where: { id: createTweetDto.originalTweetId },
+  //     });
+  //     if (!originalTweet) {
+  //       throw new Error('Original tweet not found');
+  //     }
+  //   } else {
+  //     createTweetDto.originalTweetId = '';
+  //   }
+
+  //   const newTweet = this.tweetRepo.create(createTweetDto);
+  //   console.log(newTweet);
+
+  //   return await this.tweetRepo.save(newTweet);
+  // }
+
   async create(createTweetDto: CreateTweetDto): Promise<Tweet> {
+    // Find user
     const user = await this.userRepo.findOne({
-      where: { id: createTweetDto.user.id },
+      where: { id: createTweetDto.userId },
     });
     if (!user) throw new Error('User not found');
 
-    let originalTweet: Tweet | null = null;
-    if (createTweetDto.originalTweetId) {
-      originalTweet = await this.tweetRepo.findOne({
+    // Create new tweet instance
+    const newTweet = new Tweet();
+    newTweet.content = createTweetDto.content;
+    newTweet.userId = createTweetDto.userId;
+
+    // Handle originalTweetId only if it's a non-empty string
+    if (
+      createTweetDto.originalTweetId &&
+      createTweetDto.originalTweetId.trim() !== ''
+    ) {
+      const originalTweet = await this.tweetRepo.findOne({
         where: { id: createTweetDto.originalTweetId },
       });
       if (!originalTweet) {
         throw new Error('Original tweet not found');
       }
+      newTweet.originalTweetId = originalTweet.id;
     }
-
-    const newTweet = this.tweetRepo.create(createTweetDto);
 
     return await this.tweetRepo.save(newTweet);
   }
 
-  findAll() {
-    return `This action returns all tweet`;
+  async findAll(): Promise<Tweet[]> {
+    try {
+      return await this.tweetRepo.find();
+    } catch (error) {
+      throw new Error(`Failed to retrieve tweets: ${error.message}`);
+    }
   }
 
   findOne(id: number) {
