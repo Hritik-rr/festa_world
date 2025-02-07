@@ -1,3 +1,5 @@
+import { forwardRef } from '@nestjs/common';
+import { Follower } from 'src/follower/entities/follower.entity';
 import { Tweet } from 'src/tweet/entities/tweet.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -20,4 +22,10 @@ export class User {
 
   @OneToMany(() => Tweet, (tweet) => tweet.userId)
   tweets: Tweet[];
+
+  @OneToMany('Follower', (follow: Follower) => follow.follower)
+  following: Follower[];
+
+  @OneToMany('Follower', (follow: Follower) => follow.following)
+  followers: Follower[];
 }
