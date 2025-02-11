@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { FollowerModule } from './follower/follower.module';
 import { Follower } from './follower/entities/follower.entity';
+import { TimelineModule } from './timeline/timeline.module';
+// import { Timeline } from './timeline/entities/timeline.entity';
 
 @Module({
   imports: [
@@ -20,8 +22,8 @@ import { Follower } from './follower/entities/follower.entity';
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASS || 'admin',
       database: process.env.DB_NAME || 'postgres',
-      entities: [User, Tweet, Follower], // Register the User entity
-      synchronize: true, // Automatically updates DB schema (disable in production)
+      entities: [User, Tweet, Follower],
+      synchronize: true,
       logging: false,
     }),
     ConfigModule.forRoot({ cache: true }),
@@ -29,6 +31,7 @@ import { Follower } from './follower/entities/follower.entity';
     TweetModule,
     AuthModule,
     FollowerModule,
+    TimelineModule,
   ],
   controllers: [AppController],
   providers: [AppService],
