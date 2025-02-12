@@ -12,13 +12,26 @@ export class TimelineService {
     private readonly tweetRepo: Repository<Tweet>,
   ) {}
 
-  async findAll() {
-    const tweets = await this.tweetRepo.find({
+  async findAll(page: number = 1, limit: number = 5) {
+    const skip = (page - 1) * limit;
+
+    const [tweets, total] = await this.tweetRepo.findAndCount({
       order: {
         updatedAt: 'DESC',
       },
+      take: limit,
+      skip: skip,
     });
-    return tweets;
+
+    return {
+      data: tweets,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   create(createTimelineDto: CreateTimelineDto) {
