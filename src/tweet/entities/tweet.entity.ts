@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-// import { Like } from '../../like/entities/like.entity';
+import { Like } from '../../like/entities/like.entity';
 
 @Entity()
 export class Tweet {
@@ -29,7 +29,10 @@ export class Tweet {
 
   @UpdateDateColumn()
   updatedAt: Date; // Date and time the tweet was last updated
-}
 
-//   @OneToMany(() => Like, (like) => like.tweet)
-//   likes: Like[]; // Likes on the tweet
+  @OneToMany(() => Like, (like) => like.tweet)
+  likes: Like[]; // Likes on the tweet
+
+  @Column()
+  likesCount: number;
+}

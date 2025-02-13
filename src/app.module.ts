@@ -12,6 +12,8 @@ import { FollowerModule } from './follower/follower.module';
 import { Follower } from './follower/entities/follower.entity';
 import { TimelineModule } from './timeline/timeline.module';
 // import { Timeline } from './timeline/entities/timeline.entity';
+import { LikeModule } from './like/like.module';
+import { Like } from './like/entities/like.entity';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { TimelineModule } from './timeline/timeline.module';
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASS || 'admin',
       database: process.env.DB_NAME || 'postgres',
-      entities: [User, Tweet, Follower],
+      entities: [User, Tweet, Follower, Like],
       synchronize: true,
       logging: false,
     }),
@@ -32,6 +34,7 @@ import { TimelineModule } from './timeline/timeline.module';
     AuthModule,
     FollowerModule,
     TimelineModule,
+    LikeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

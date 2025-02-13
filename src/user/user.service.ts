@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { CustomException } from 'src/common/exceptions/custom.exception';
 
 @Injectable()
 export class UserService {
@@ -12,23 +13,28 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.userRepo.findOneBy({
-      email: createUserDto.email,
-    });
-    if (existingUser) {
-      throw new Error('User already exists');
-    }
+    try {
+      const existingUser = await this.userRepo.findOneBy({
+        email: createUserDto.email,
+      });
+      if (existingUser) {
+        throw new CustomException('User already exists');
+      }
 
-    const newUser = this.userRepo.create(createUserDto);
-    const newUserCheck = await this.userRepo.save(newUser);
-    return newUserCheck;
+      const newUser = this.userRepo.create(createUserDto);
+      const newUserCheck = await this.userRepo.save(newUser);
+      return newUserCheck;
+    } catch (error) {
+      throw new CustomException('Error creating new user.');
+    }
   }
 
-  // if (error instanceof QueryFailedError && error.message.includes('duplicate key value violates unique constraint')) {
-  //   throw new HttpException('User with this email already exists', HttpStatus.CONFLICT);
-
   async findAll(): Promise<User[]> {
-    return await this.userRepo.find();
+    try {
+      return await this.userRepo.find();
+    } catch (error) {
+      throw new CustomException('Error fetching users.');
+    }
   }
 
   findOne(id: number) {

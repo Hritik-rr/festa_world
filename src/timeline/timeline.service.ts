@@ -24,7 +24,7 @@ export class TimelineService {
     });
 
     return {
-      data: tweets,
+      tweets,
       meta: {
         total,
         page,
