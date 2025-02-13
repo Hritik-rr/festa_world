@@ -11,6 +11,7 @@ import {
 import { TimelineService } from './timeline.service';
 import { CreateTimelineDto } from './dto/create-timeline.dto';
 import { UpdateTimelineDto } from './dto/update-timeline.dto';
+import { CustomException } from 'src/common/exceptions/custom.exception';
 
 @Controller('timeline')
 export class TimelineController {
@@ -26,7 +27,15 @@ export class TimelineController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
   ) {
-    return await this.timelineService.findAll(+page, +limit);
+    if (page >= 1 && limit >= 5) {
+      try {
+        return await this.timelineService.findAll(+page, +limit);
+      } catch (error) {
+        throw new CustomException('Failed to fetch timeline');
+      }
+    } else {
+      throw new CustomException('Invalid page or limit');
+    }
   }
 
   @Get(':id')

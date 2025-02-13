@@ -22,6 +22,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,15 +32,14 @@ async function bootstrap() {
   // Add global validation pipe
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  // Apply global exception filter
+  app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
+
   const config = new DocumentBuilder()
     .setTitle('Median')
     .setDescription('The Median API description')
     .setVersion('0.1')
-    // Add tags for API grouping
-    // .addTag('Auth', 'Authentication endpoints')
-    // .addTag('Users', 'User management endpoints')
-    // .addTag('Tweets', 'Tweet management endpoints')
-    // Add Bearer Auth support
     .addBearerAuth(
       {
         type: 'http',

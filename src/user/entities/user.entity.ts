@@ -1,5 +1,6 @@
 import { forwardRef } from '@nestjs/common';
 import { Follower } from 'src/follower/entities/follower.entity';
+import { Like } from 'src/like/entities/like.entity';
 import { Tweet } from 'src/tweet/entities/tweet.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -28,4 +29,7 @@ export class User {
 
   @OneToMany('Follower', (follow: Follower) => follow.following)
   followers: Follower[];
+
+  @OneToMany('Like', (like: Like) => like.user)
+  likes: Like[];
 }
