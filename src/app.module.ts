@@ -7,13 +7,14 @@ import { User } from './user/entities/user.entity';
 import { TweetModule } from './tweet/tweet.module';
 import { Tweet } from './tweet/entities/tweet.entity';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { FollowerModule } from './follower/follower.module';
 import { Follower } from './follower/entities/follower.entity';
 import { TimelineModule } from './timeline/timeline.module';
-// import { Timeline } from './timeline/entities/timeline.entity';
 import { LikeModule } from './like/like.module';
 import { Like } from './like/entities/like.entity';
+import { firebaseConfig } from './config/firebase.config';
+import { AuthModule } from './auth/auth.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -28,13 +29,17 @@ import { Like } from './like/entities/like.entity';
       synchronize: true,
       logging: false,
     }),
-    ConfigModule.forRoot({ cache: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [firebaseConfig],
+    }),
     UserModule,
     TweetModule,
-    AuthModule,
     FollowerModule,
     TimelineModule,
     LikeModule,
+    AuthModule,
+    FirebaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

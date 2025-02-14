@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
 import { CustomException } from 'src/common/exceptions/custom.exception';
 import { Like } from './entities/like.entity';
 import { Repository } from 'typeorm';

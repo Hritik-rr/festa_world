@@ -18,4 +18,9 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  firebaseUid: string;
 }
