@@ -48,4 +48,16 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+  async findByFirebaseUid(firebaseUid: string): Promise<User> {
+    try {
+      const user = await this.userRepo.findOneBy({ firebaseUid });
+      if (!user) {
+        throw new CustomException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new CustomException('Error fetching user');
+    }
+  }
 }
