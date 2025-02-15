@@ -3,6 +3,6 @@ import { FirebaseService } from './firebase.service';
 
 @Module({
   providers: [FirebaseService],
-  exports: [FirebaseService], // We export it so other modules can use it
+  exports: [FirebaseService],
 })
 export class FirebaseModule {}
