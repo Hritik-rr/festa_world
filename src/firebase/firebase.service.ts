@@ -8,7 +8,6 @@ export class FirebaseService implements OnApplicationBootstrap {
 
   constructor(private configService: ConfigService) {}
 
-  // This will run when the application starts
   onApplicationBootstrap() {
     // Initialize Firebase only if it hasn't been initialized
     if (!admin.apps.length) {
