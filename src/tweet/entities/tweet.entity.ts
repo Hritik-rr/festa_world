@@ -18,8 +18,8 @@ export class Tweet {
   @Column({ length: 280 })
   content: string; // Text content of the tweet
 
-  @ManyToOne(() => User, (User) => User.id)
-  userId: string; // Reference to the user who posted the tweet
+  @ManyToOne(() => User, (user) => user.tweet)
+  user: User[]; // Reference to the user who posted the tweet
 
   @ManyToOne(() => Tweet, { nullable: true })
   originalTweetId?: string; // Reference to the original tweet id for retweets

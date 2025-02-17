@@ -27,7 +27,7 @@ export class TweetService {
       // Create new tweet instance
       const newTweet = new Tweet();
       newTweet.content = createTweetDto.content;
-      newTweet.userId = createTweetDto.userId;
+      newTweet.user = [user];
 
       // Handle originalTweetId only if it's a non-empty string
       if (
@@ -44,17 +44,11 @@ export class TweetService {
         newTweet.originalTweetId = originalTweet.id;
       }
 
-      // Get the number of likes for the tweet
-      const countNumber = await this.likeRepo.count({
-        where: {
-          tweet: newTweet,
-        },
-      });
-      newTweet.likesCount = countNumber;
+      newTweet.likesCount = 0;
       const savedTweet = await this.tweetRepo.save(newTweet);
       return {
         ...savedTweet,
-        likesCount: countNumber,
+        likesCount: 0,
       };
     } catch (error) {
       throw new CustomException('Error creating new tweet.');
@@ -67,17 +61,5 @@ export class TweetService {
     } catch (error) {
       throw new CustomException('Failed to retrieve tweets.');
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} tweet`;
-  }
-
-  update(id: number, updateTweetDto: UpdateTweetDto) {
-    return `This action updates a #${id} tweet`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tweet`;
   }
 }

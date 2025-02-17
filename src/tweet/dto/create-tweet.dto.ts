@@ -14,6 +14,6 @@ export class CreateTweetDto {
 
   @ApiProperty({ required: false, nullable: true })
   @IsString()
-  @IsOptional() // Add this decorator
+  @IsOptional()
   originalTweetId?: string | null;
 }

@@ -1,24 +1,23 @@
-import { User } from 'src/user/entities/user.entity';
 import {
-  Column,
-  CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
 
-@Entity()
-export class Follower {
+@Entity('follows')
+export class Follow {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne(() => User, (user) => user.following)
-  @JoinColumn({ name: 'followerId' })
+  @JoinColumn({ name: 'follower_id' })
   follower: User;
 
   @ManyToOne(() => User, (user) => user.followers)
-  @JoinColumn({ name: 'followingId' })
+  @JoinColumn({ name: 'following_id' })
   following: User;
 
   @CreateDateColumn()
