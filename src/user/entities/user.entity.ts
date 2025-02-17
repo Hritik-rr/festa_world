@@ -1,5 +1,5 @@
 import { forwardRef } from '@nestjs/common';
-import { Follower } from 'src/follower/entities/follower.entity';
+import { Follow } from 'src/follows/entities/follow.entity';
 import { Like } from 'src/like/entities/like.entity';
 import { Tweet } from 'src/tweet/entities/tweet.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
@@ -24,14 +24,14 @@ export class User {
   @Column({ length: 16, unique: true })
   email: string;
 
-  @OneToMany(() => Tweet, (tweet) => tweet.userId)
-  tweets: Tweet[];
+  @OneToMany(() => Tweet, (tweet: Tweet) => tweet.user)
+  tweet: Tweet[];
 
-  @OneToMany('Follower', (follow: Follower) => follow.follower)
-  following: Follower[];
+  @OneToMany(() => Follow, (follow: Follow) => follow.follower)
+  following: Follow[];
 
-  @OneToMany('Follower', (follow: Follower) => follow.following)
-  followers: Follower[];
+  @OneToMany(() => Follow, (follow: Follow) => follow.following)
+  followers: Follow[];
 
   @OneToMany('Like', (like: Like) => like.user)
   likes: Like[];

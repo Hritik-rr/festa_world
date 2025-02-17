@@ -7,14 +7,14 @@ import { User } from './user/entities/user.entity';
 import { TweetModule } from './tweet/tweet.module';
 import { Tweet } from './tweet/entities/tweet.entity';
 import { ConfigModule } from '@nestjs/config';
-import { FollowerModule } from './follower/follower.module';
-import { Follower } from './follower/entities/follower.entity';
 import { TimelineModule } from './timeline/timeline.module';
 import { LikeModule } from './like/like.module';
 import { Like } from './like/entities/like.entity';
 import { firebaseConfig } from './config/firebase.config';
 import { AuthModule } from './auth/auth.module';
 import { FirebaseModule } from './firebase/firebase.module';
+import { FollowsModule } from './follows/follows.module';
+import { Follow } from './follows/entities/follow.entity';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { FirebaseModule } from './firebase/firebase.module';
             password: process.env.DB_PASS || 'admin',
             database: process.env.DB_NAME || 'postgres',
           }),
-      entities: [User, Tweet, Follower, Like],
+      entities: [User, Tweet, Like, Follow],
       synchronize: true,
       logging: false,
     }),
@@ -44,11 +44,11 @@ import { FirebaseModule } from './firebase/firebase.module';
     }),
     UserModule,
     TweetModule,
-    FollowerModule,
     TimelineModule,
     LikeModule,
     AuthModule,
     FirebaseModule,
+    FollowsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,23 +1,3 @@
-// import { NestFactory } from '@nestjs/core';
-// import { AppModule } from './app.module';
-// import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-//   app.enableCors();
-
-//   const config = new DocumentBuilder()
-//     .setTitle('Median')
-//     .setDescription('The Median API description')
-//     .setVersion('0.1')
-//     .build();
-
-//   const document = SwaggerModule.createDocument(app, config);
-//   SwaggerModule.setup('api', app, document);
-//   await app.listen(process.env.PORT ?? 3000);
-// }
-// bootstrap();
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -37,8 +17,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   const config = new DocumentBuilder()
-    .setTitle('Median')
-    .setDescription('The Median API description')
+    .setTitle('Festa World')
+    .setDescription('Festa World API testing ground.')
     .setVersion('0.1')
     .addBearerAuth(
       {
@@ -60,7 +40,7 @@ async function bootstrap() {
     swaggerOptions: {
       persistAuthorization: true,
     },
-    customSiteTitle: 'Median API Docs',
+    customSiteTitle: 'Festa World API Docs',
   });
 
   await app.listen(process.env.PORT ?? 3000);

@@ -61,16 +61,4 @@ export class LikeService {
   async findAll() {
     return await this.likeRepository.find();
   }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} like`;
-  // }
-
-  // update(id: number, updateLikeDto: UpdateLikeDto) {
-  //   return `This action updates a #${id} like`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} like`;
-  // }
 }
