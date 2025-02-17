@@ -20,11 +20,20 @@ import { FirebaseModule } from './firebase/firebase.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: Number(process.env.DB_PORT) || 5432,
-      username: process.env.DB_USER || 'admin',
-      password: process.env.DB_PASS || 'admin',
-      database: process.env.DB_NAME || 'postgres',
+      ...(process.env.DATABASE_URL
+        ? {
+            url: process.env.DATABASE_URL,
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          }
+        : {
+            host: process.env.DB_HOST || 'localhost',
+            port: Number(process.env.DB_PORT) || 5432,
+            username: process.env.DB_USER || 'admin',
+            password: process.env.DB_PASS || 'admin',
+            database: process.env.DB_NAME || 'postgres',
+          }),
       entities: [User, Tweet, Follower, Like],
       synchronize: true,
       logging: false,
