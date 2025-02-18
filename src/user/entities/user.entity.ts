@@ -21,7 +21,7 @@ export class User {
   @Column({ length: 20 })
   lastName: string;
 
-  @Column({ length: 16, unique: true })
+  @Column({ length: 40, unique: true, nullable: true })
   email: string;
 
   @OneToMany(() => Tweet, (tweet: Tweet) => tweet.user)
