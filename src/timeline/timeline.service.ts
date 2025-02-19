@@ -40,60 +40,42 @@ export class TimelineService {
       };
     }
 
-    const [tweets, count] = await this.getTimelineTweets(
-      followingIds,
-      skip,
-      limit,
-    );
-    console.log('tweets', tweets);
+    for (const userId of followingIds) {
+      await this.tweetRepo.findOne({
+        where: {
+          user: {
+            id: userId,
+          },
+        },
+        relations: ['user'],
+      });
+    }
+
+    // Then try a simpler version of our main query
+    const queryBuilder = this.tweetRepo
+      .createQueryBuilder('tweet')
+      .where('tweet.userId IN (:...followingIds)', { followingIds })
+      .orderBy('tweet.updatedAt', 'DESC')
+      .skip(skip)
+      .take(limit);
+
+    // Meant for Debugging; To check raw query and parameters
+    // const [rawQuery, parameters] = queryBuilder.getQueryAndParameters();
+    // console.log('Simplified Raw Query:', rawQuery);
+    // console.log('Parameters:', parameters);
+
+    const result = await queryBuilder.getManyAndCount();
+    // console.log('Simplified query result:', result);
 
     return {
-      tweets,
+      tweets: result[0],
       meta: {
-        total: count,
+        total: result[1],
         page,
         limit,
-        totalPages: Math.ceil(count / limit),
+        totalPages: Math.ceil(result[1] / limit),
       },
     };
-  }
-
-  private async getTimelineTweets(
-    followingIds: string[],
-    skip: number,
-    limit: number,
-  ): Promise<[Tweet[], number]> {
-    console.log('Following IDs:', followingIds);
-
-    try {
-      // IMPORTANT: Log the repository metadata
-      // console.log(
-      //   'Tweet entity columns:',
-      //   this.tweetRepo.metadata.columns.map((col) => col.propertyName),
-      // );
-
-      const queryBuilder = this.tweetRepo
-        .createQueryBuilder('tweet')
-        .innerJoinAndSelect('tweet.user', 'user') // Changed to innerJoin
-        .where('user.id IN (:...followingIds)', { followingIds }) // Changed to reference user.id
-        .orderBy('tweet.updatedAt', 'DESC')
-        .skip(skip)
-        .take(limit);
-
-      // IMPORTANT: Log the raw SQL and parameters
-      // const [rawQuery, parameters] = queryBuilder.getQueryAndParameters();
-      // console.log('Raw Query:', rawQuery);
-      // console.log('Parameters:', parameters);
-
-      const result = await queryBuilder.getManyAndCount();
-      console.log('Query executed successfully');
-      console.log('Number of tweets found:', result[1]);
-
-      return result;
-    } catch (error) {
-      console.error('QueryBuilder Error:', error);
-      throw error;
-    }
   }
 
   findOne(id: number) {

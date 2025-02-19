@@ -19,42 +19,53 @@ export class LikeService {
   async create(createLikeDto: CreateLikeDto) {
     try {
       const user = await this.userRepository.findOne({
-        where: {
-          id: createLikeDto.userId,
-        },
+        where: { id: createLikeDto.userId },
       });
       if (!user) {
         throw new CustomException('User not found.');
       }
 
-      const tweetId = await this.tweetRepository.findOne({
-        where: {
-          id: createLikeDto.tweetId,
-        },
+      const tweet = await this.tweetRepository.findOne({
+        where: { id: createLikeDto.tweetId },
       });
-      if (!tweetId) {
+      if (!tweet) {
         throw new CustomException('Tweet not found.');
       }
 
+      if (tweet.userId === user.id) {
+        throw new CustomException('You cannot like your own tweet.');
+      }
+
+      const doubleLike = await this.likeRepository.findOne({
+        where: {
+          userId: createLikeDto.userId,
+          tweet: { id: createLikeDto.tweetId },
+        },
+        relations: ['tweet'],
+      });
+
+      if (doubleLike) {
+        throw new CustomException('You already liked this tweet.');
+      }
+
+      await this.tweetRepository.update(
+        { id: createLikeDto.tweetId },
+        { likesCount: () => 'likesCount + 1' },
+      );
+
       const likeResData = this.likeRepository.create({
         user: user,
-        tweet: tweetId,
+        tweet: tweet,
       });
       await this.likeRepository.save(likeResData);
-
-      await this.tweetRepository
-        .createQueryBuilder()
-        .update()
-        .set({
-          likesCount: () => 'likesCount + 1',
-        })
-        .where('id = :tweetId', { tweetId: createLikeDto.tweetId })
-        .execute();
 
       return {
         likeResData,
       };
     } catch (error) {
+      if (error instanceof CustomException) {
+        throw error;
+      }
       throw new CustomException('Error creating like.');
     }
   }
