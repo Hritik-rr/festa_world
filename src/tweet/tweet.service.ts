@@ -24,19 +24,18 @@ export class TweetService {
       });
       if (!user) throw new CustomException('User not found.');
 
-      // Create new tweet instance
-      const newTweet = new Tweet();
-      newTweet.content = createTweetDto.content;
-      newTweet.user = [user];
+      // Create new tweet instance using repository create method
+      const newTweet = this.tweetRepo.create({
+        content: createTweetDto.content,
+        userId: createTweetDto.userId,
+        user: user,
+        likesCount: 0,
+        originalTweetId: createTweetDto.originalTweetId || undefined,
+      });
 
-      // Handle originalTweetId only if it's a non-empty string
-      if (
-        createTweetDto.originalTweetId &&
-        createTweetDto.originalTweetId.trim() !== '' &&
-        createTweetDto.originalTweetId !== null
-      ) {
+      if (newTweet.originalTweetId?.trim()) {
         const originalTweet = await this.tweetRepo.findOne({
-          where: { id: createTweetDto.originalTweetId },
+          where: { id: newTweet.originalTweetId },
         });
         if (!originalTweet) {
           throw new CustomException('Original tweet not found.');
@@ -44,12 +43,9 @@ export class TweetService {
         newTweet.originalTweetId = originalTweet.id;
       }
 
-      newTweet.likesCount = 0;
+      // Save and return as Promise<Tweet>
       const savedTweet = await this.tweetRepo.save(newTweet);
-      return {
-        ...savedTweet,
-        likesCount: 0,
-      };
+      return savedTweet;
     } catch (error) {
       throw new CustomException('Error creating new tweet.');
     }
